@@ -1,0 +1,14 @@
+.container .row .card {
+  box-shadow: 3px 3px 10px -2px gray;
+}
+.container .row .card:hover {
+  box-shadow: 6px 6px 8px 1px gray;
+  transform: scale(1.05);
+  transition: transform 200ms ease;
+}
+.container .row a {
+  text-decoration: none;
+}
+.container .row .form-container {
+  box-shadow: 4px 4px 13px grey;
+}/*# sourceMappingURL=main.css.map */

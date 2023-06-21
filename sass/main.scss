@@ -1,0 +1,19 @@
+
+.container {
+  .row {
+    .card {
+      box-shadow: 3px 3px 10px -2px gray;
+      &:hover {
+      box-shadow: 6px 6px 8px 1px gray;
+      transform: scale(1.05);
+      transition: transform 200ms ease;
+      }
+    }
+    a {
+      text-decoration: none;
+    }
+    .form-container {
+      box-shadow: 4px 4px 13px grey;
+    }
+  }
+}
