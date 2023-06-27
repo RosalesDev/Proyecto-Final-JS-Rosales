@@ -1,26 +1,13 @@
 /* -------------------------------------------------------------------------- */
 /*                            IMPORTO LAS ENTIDADES                           */
 /* -------------------------------------------------------------------------- */
-import {Person} from '../entities/Person.js';
-import {Professional} from '../entities/Professional.js';
-import {ProfessionalPlanning} from '../entities/ProfessionalPlanning.js';
-import {Appointment} from '../entities/Appointment.js';
+import { Person } from "../entities/Person.js";
+import { Appointment } from "../entities/Appointment.js";
+import { fetchWeatherData } from "../script/utils/weather.js";
 import {
-  professional_person_1,
-  professional_person_2,
-  professional_person_3,
-  professional_person_4,
-  professional_1,
-  professional_2,
-  professional_3,
-  professional_4,
-  planning_1,
-  planning_2,
-  planning_3,
-  planning_4,
   professionalList,
-  professionaPlanningList
-} from '../script/initial-data.js';
+  professionaPlanningList,
+} from "../script/initial-data.js";
 
 function createNewAppointment(person, time, professional_planning) {
   let appointment = new Appointment(person, time, professional_planning);
@@ -34,31 +21,31 @@ let appointmentList = [];
 
 /* -------- CREO LISTAS DE PLANIFICACIONES Y TURNOS EN LOCAL STORAGE -------- */
 if (!localStorage.getItem("professional_planning_list")) {
-
   localStorage.setItem(
     "professional_planning_list",
     JSON.stringify(professionaPlanningList)
   );
 }
 
-
 if (!localStorage.getItem("appointment_list")) {
-  localStorage.setItem(
-    "appointment_list",
-    JSON.stringify(appointmentList)
-  );
+  localStorage.setItem("appointment_list", JSON.stringify(appointmentList));
 }
 
 const mainTitle = document.querySelector("main h3");
 const mainGrid = document.querySelector(".container .row");
-
+const nav = document.querySelector(".navbar .container-fluid");
 
 /* -------------------------------------------------------------------------- */
 /*                 FUNCIÓN QUE RENDERIZA LA PANTALLA PRINCIPAL                */
 /* -------------------------------------------------------------------------- */
+
 function renderMainGrid() {
+
   mainGrid.innerHTML = "";
   mainTitle.innerHTML = "Selecciona el profesional para solicitar un turno.";
+  const weatherContainer = document.createElement('div');
+  fetchWeatherData(weatherContainer, nav);
+  
 
   for (let professional of professionalList) {
     let cardDiv = document.createElement("div");
@@ -95,18 +82,17 @@ function renderMainGrid() {
 
 renderMainGrid();
 
-
 /* -------------------------------------------------------------------------- */
 /*           FUNCIÓN QUE REEMPLAZA EL CONTENIDO DE LA PAGINA PRINCIPAL        */
 /*             POR UN FORMULARIO PARA INGRESAR LOS DATOS DEL PACIENTE.        */
 /* -------------------------------------------------------------------------- */
 function goToForm(professional) {
-
   /* ----------- QUITA EL HORARIO QUE SE UTILIZÓ AL GENERAR EL TURNO ---------- */
-  function deleteUsedTimeOnLS(professionalPlanning,selectedTime) {
-    professionalPlanning.available_times_list = professionalPlanning.available_times_list.filter(
-      (time) => time != selectedTime
-    );
+  function deleteUsedTimeOnLS(professionalPlanning, selectedTime) {
+    professionalPlanning.available_times_list =
+      professionalPlanning.available_times_list.filter(
+        (time) => time != selectedTime
+      );
   }
 
   /* ------------- TRAIGO DATOS DEL LS PARA USARLOS AL RENDERIZAR ------------- */
@@ -115,7 +101,8 @@ function goToForm(professional) {
   );
   const professionalPlanningFromLS = professionalPlanningListFromLS.find(
     (professionalPlanning) =>
-      professionalPlanning.professional.id == professional.id);
+      professionalPlanning.professional.id == professional.id
+  );
 
   /* ---------------- PLANIFICACIÓN DEL PROFESIONAL SELECIONADO --------------- */
   const professionalPlanning = professionaPlanningList.find(
@@ -125,9 +112,9 @@ function goToForm(professional) {
   /* ----------------- CONTROLO SI TIENE HORARIOS DISPONIBLES ----------------- */
   if (professionalPlanningFromLS.available_times_list.length == 0) {
     Swal.fire({
-      icon: 'warning',
-      title: 'El profesional no tiene horarios disponibles.',
-      allowOutsideClick: false
+      icon: "warning",
+      title: "El profesional no tiene horarios disponibles.",
+      allowOutsideClick: false,
     });
     return 0;
   }
@@ -275,32 +262,32 @@ function goToForm(professional) {
 
     if (selectedTime == "Horas disponibles") {
       Swal.fire({
-        icon: 'error',
-        title: 'Debe seleccionar una hora para el turno.',
+        icon: "error",
+        title: "Debe seleccionar una hora para el turno.",
         allowOutsideClick: false,
-      })
+      });
       return 0;
     }
     if (docNumber != undefined && (isNaN(docNumber) || docNumber.length < 8)) {
       Swal.fire({
-        icon: 'error',
-        title: 'El DNI ingresado no es válido.',
+        icon: "error",
+        title: "El DNI ingresado no es válido.",
         allowOutsideClick: false,
       });
       return 0;
     }
     if (lastName != undefined && lastName.length < 3) {
       Swal.fire({
-        icon: 'error',
-        title: 'El apellido ingresado no es válido.',
+        icon: "error",
+        title: "El apellido ingresado no es válido.",
         allowOutsideClick: false,
       });
       return 0;
     }
     if (firstName != undefined && firstName.length < 3) {
       Swal.fire({
-        icon: 'error',
-        title: 'El nombre ingresado no es válido.',
+        icon: "error",
+        title: "El nombre ingresado no es válido.",
         allowOutsideClick: false,
       });
       return 0;
@@ -316,7 +303,7 @@ function goToForm(professional) {
     );
 
     patientList.push(newPerson);
-    localStorage.setItem('patient_list',JSON.stringify(patientList));
+    localStorage.setItem("patient_list", JSON.stringify(patientList));
 
     /* ------------------------- SE CREA EL NUEVO TURNO ------------------------- */
     const newAppointment = createNewAppointment(
@@ -326,23 +313,22 @@ function goToForm(professional) {
     );
     if (newAppointment != undefined) {
       appointmentList.push(newAppointment);
-      localStorage.setItem('appointment_list', JSON.stringify(appointmentList));
+      localStorage.setItem("appointment_list", JSON.stringify(appointmentList));
 
-/* -- BORRO EL HORARIO USTILIZADO Y MANDO DE NUEVO LAS PLANIFICACIONES AL LS - */
-      deleteUsedTimeOnLS(professionalPlanningFromLS,selectedTime);
+      /* -- BORRO EL HORARIO USTILIZADO Y MANDO DE NUEVO LAS PLANIFICACIONES AL LS - */
+      deleteUsedTimeOnLS(professionalPlanningFromLS, selectedTime);
       localStorage.setItem(
         "professional_planning_list",
         JSON.stringify(professionalPlanningListFromLS)
       );
 
       Swal.fire({
-        icon: 'success',
-        title: 'Turno generado con éxito.',
+        icon: "success",
+        title: "Turno generado con éxito.",
         html: `<p>Hora del turno: ${selectedTime}</p>`,
         allowOutsideClick: false,
       });
       renderMainGrid();
     }
-
   });
 }
