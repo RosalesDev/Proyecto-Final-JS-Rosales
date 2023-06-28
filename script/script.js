@@ -3,12 +3,14 @@
 /* -------------------------------------------------------------------------- */
 import { Person } from "../entities/Person.js";
 import { Appointment } from "../entities/Appointment.js";
-import { fetchWeatherData } from "../script/utils/weather.js";
 import {
   professionalList,
   professionaPlanningList,
 } from "../script/initial-data.js";
 
+import { fetchWeatherData } from "../script/utils/weather.js";
+
+/* ----------------------- FUCIÓN PARA CREAR UN TURNO ----------------------- */
 function createNewAppointment(person, time, professional_planning) {
   let appointment = new Appointment(person, time, professional_planning);
   professional_planning.deleteUsedTime(time);
@@ -40,15 +42,23 @@ const nav = document.querySelector(".navbar .container-fluid");
 /* -------------------------------------------------------------------------- */
 
 function renderMainGrid() {
-
   mainGrid.innerHTML = "";
   mainTitle.innerHTML = "Selecciona el profesional para solicitar un turno.";
-  const weatherContainer = document.createElement('div');
-  fetchWeatherData(weatherContainer, nav);
-  
+
+  /* ------------- TRAIGO DATOS DEL LS PARA USARLOS AL RENDERIZAR ------------- */
+  const professionalPlanningListFromLS = JSON.parse(
+    localStorage.getItem("professional_planning_list")
+  );
+
+  fetchWeatherData(nav);
 
   for (let professional of professionalList) {
-    let cardDiv = document.createElement("div");
+    const currentPlanning = professionalPlanningListFromLS.find(
+      (pPlanning) =>
+        pPlanning.professional.person.doc_number ==
+        professional.person.doc_number
+    );
+    const cardDiv = document.createElement("div");
     cardDiv.className = "col";
 
     cardDiv.innerHTML = `
@@ -59,6 +69,9 @@ function renderMainGrid() {
               <div class="card-body">
                 <h5 class="card-title">${professional.person.last_name} ${professional.person.first_name}</h5>
                 <p class="card-text">${professional.specialty}</p>
+                <div class="text-center">
+                  <span class="badge rounded-pill text-bg-info">Turnos disponibles: ${currentPlanning.available_times_list.length}</span>
+                </div>
               </div>
             </div>
           </div>

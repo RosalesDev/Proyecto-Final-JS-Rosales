@@ -1,4 +1,8 @@
-export function fetchWeatherData(weatherContainer, nav) {
+let lastRequest = Date.now();
+let timeElapsed = 0;
+let weatherData = undefined;
+
+export function fetchWeatherData(nav) {
   const options = {
     enableHighAccuracy: true,
     timeout: 5000,
@@ -6,8 +10,8 @@ export function fetchWeatherData(weatherContainer, nav) {
   };
 
   let url = "";
-  let weatherData = {};
 
+  const weatherContainer = document.createElement("div");
   nav.appendChild(weatherContainer);
 
   function success(position) {
@@ -19,10 +23,9 @@ export function fetchWeatherData(weatherContainer, nav) {
     fetch(url)
       .then((res) => res.json())
       .then((data) => {
-
         nav.childNodes[7].remove();
-        let weatherWidget = document.createElement('div');
-        weatherWidget.className = 'row justify-content-center';
+        let weatherWidget = document.createElement("div");
+        weatherWidget.className = "row justify-content-center";
 
         const iconId = data.weather[0].icon;
         weatherData = {
@@ -32,8 +35,7 @@ export function fetchWeatherData(weatherContainer, nav) {
           weather: data.weather[0].description.toUpperCase(),
         };
 
-        weatherWidget.innerHTML =
-        `
+        weatherWidget.innerHTML = `
         <div class='col text-light text-center'>
           <img src=${weatherData.weatherIconUrl} alt="Weather Icon" height="40">
         </div>
@@ -47,16 +49,21 @@ export function fetchWeatherData(weatherContainer, nav) {
         </div>
         `;
         nav.appendChild(weatherWidget);
-      }).catch(() => error())
+      })
+      .catch(() => error());
   }
 
   function error() {
     nav.childNodes[7].remove();
-    let weatherWidget = document.createElement('div');
-    weatherWidget.style.color = 'white';
-    weatherWidget.innerHTML =
-    `ERROR :(`;
+    let weatherWidget = document.createElement("div");
+    weatherWidget.style.color = "white";
+    weatherWidget.innerHTML = `ERROR :(`;
     nav.appendChild(weatherWidget);
   }
-  navigator.geolocation.getCurrentPosition(success, error, options);
+
+  timeElapsed = (Date.now() - lastRequest) / 60000;
+
+  if (timeElapsed > 5 || weatherData == undefined) {
+    navigator.geolocation.getCurrentPosition(success, error, options);
+  }
 }
