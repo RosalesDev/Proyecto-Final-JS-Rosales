@@ -25,29 +25,26 @@ export function fetchWeatherData(nav) {
       .then((data) => {
         nav.childNodes[7].remove();
         let weatherWidget = document.createElement("div");
-        weatherWidget.className = "row justify-content-center";
+        weatherWidget.className =
+          "row justify-content-center align-items-center";
 
         const iconId = data.weather[0].icon;
         weatherData = {
           weatherIconUrl: `https://openweathermap.org/img/wn/${iconId}@2x.png`,
           city: data.name,
           temp: data.main.feels_like,
-          weather: data.weather[0].description.toUpperCase(),
+          weather: data.weather[0].description,
         };
 
         weatherWidget.innerHTML = `
-        <div class='col text-light text-center'>
-          <img src=${weatherData.weatherIconUrl} alt="Weather Icon" height="40">
+        <div class='col text-center text-light'>
+          <img src=${weatherData.weatherIconUrl} alt="Weather Icon" height="30">
+          <span class='d-block text-capitalize text-nowrap'>${weatherData.weather}</span>
         </div>
-        
-        <div class='col text-light text-center'>
-          <span>${weatherData.city}</span>
+        <div class='col text-light'>
+          <span class='d-block'>${weatherData.city}</span>
           <span>${weatherData.temp} ºC</span>
-        </div>
-        <div class='col text-light text-center'>
-          <span>${weatherData.weather}</span>
-        </div>
-        `;
+        </div>`;
         nav.appendChild(weatherWidget);
       })
       .catch(() => error());

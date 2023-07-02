@@ -8,7 +8,7 @@ import {
   professionaPlanningList,
 } from "../script/initial-data.js";
 
-import { fetchWeatherData } from "../script/utils/weather.js";
+import { fetchWeatherData as fetchAndRenderWeather } from "../script/utils/weather.js";
 
 /* ----------------------- FUCIÓN PARA CREAR UN TURNO ----------------------- */
 function createNewAppointment(person, time, professional_planning) {
@@ -50,7 +50,7 @@ function renderMainGrid() {
     localStorage.getItem("professional_planning_list")
   );
 
-  fetchWeatherData(nav);
+  fetchAndRenderWeather(nav);
 
   for (let professional of professionalList) {
     const currentPlanning = professionalPlanningListFromLS.find(
@@ -187,7 +187,7 @@ function goToForm(professional) {
         <div class="mb-3">
           <div class="form-floating mb-3">
             <select id="timeSelect" class="form-select" aria-label="Gender select">
-              <option selected>Horas disponibles</option>
+              <option selected>Horarios disponibles</option>
               ${renderTimes(professionalPlanningFromLS.available_times_list)}
             </select>
           </div>
