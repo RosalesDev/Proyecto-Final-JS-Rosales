@@ -42,8 +42,8 @@ export function fetchWeatherData(nav) {
           <span class='d-block text-capitalize text-nowrap'>${weatherData.weather}</span>
         </div>
         <div class='col text-light'>
-          <span class='d-block'>${weatherData.city}</span>
-          <span>${weatherData.temp} ºC</span>
+          <span class='d-block text-nowrap'>${weatherData.city}</span>
+          <span class='d-block text-nowrap'>${weatherData.temp} ºC</span>
         </div>`;
         nav.appendChild(weatherWidget);
       })

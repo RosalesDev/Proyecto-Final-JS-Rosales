@@ -29,14 +29,17 @@ if(appointmentList.length > 0) {
 
 /* -------- SE GENERA LA TABLA CON LOS PROFESIONALES Y SUS PACIENTES -------- */
   for(let appointment of appointmentMap) {
-    let index = appointment[0];
 
-    function buildTbody(appointmentList){
-      let tBody = '';
+    let professionalId = appointment[0];
+    let currentAppointment = appointment[1][0];
+
+    function buildTableBody(appointmentList){
+      let tableBody = '';
       let personIndex = 1;
+
       for(let appointment of appointmentList){
         let person = appointment.person;
-          tBody += `
+          tableBody += `
           <tr>
             <th scope="row">${personIndex}</th>
             <td>${appointment.time}</td>
@@ -46,15 +49,15 @@ if(appointmentList.length > 0) {
           </tr>`
           personIndex++;
       }
-      return tBody;
+      return tableBody;
     }
 
 
-    let profesionalLastName = appointment[1][0].professional_planning.professional.person.last_name;
-    let profesionalFirstName = appointment[1][0].professional_planning.professional.person.first_name;
-    let profesionalSpecialty = appointment[1][0].professional_planning.professional.specialty;
+    const profesionalLastName = currentAppointment.professional_planning.professional.person.last_name;
+    const profesionalFirstName = currentAppointment.professional_planning.professional.person.first_name;
+    const profesionalSpecialty = currentAppointment.professional_planning.professional.specialty;
 
-    let accordionItem = document.createElement("div");
+    const accordionItem = document.createElement("div");
     accordionItem.className = 'accordion-item';
     accordionItem.innerHTML = `
     <div class="accordion-item">
@@ -63,16 +66,16 @@ if(appointmentList.length > 0) {
           class="accordion-button"
           type="button"
           data-bs-toggle="collapse"
-          data-bs-target="#collapse${index}"
+          data-bs-target="#collapse${professionalId}"
           aria-expanded="true"
-          aria-controls="collapse${index}"
+          aria-controls="collapse${professionalId}"
         >
           ${profesionalLastName} ${profesionalFirstName}
           (${profesionalSpecialty})
         </button>
       </h2>
       <div
-        id="collapse${index}"
+        id="collapse${professionalId}"
         class="accordion-collapse collapse"
         data-bs-parent="#accordionExample"
       >
@@ -88,7 +91,7 @@ if(appointmentList.length > 0) {
               </tr>
             </thead>
             <tbody>
-            ${buildTbody(appointment[1])}
+            ${buildTableBody(appointment[1])}
             </tbody>
           </table>
         </div>
